@@ -12,7 +12,7 @@ class Main(QMainWindow):
 
     def set_ui(self):
         self.setWindowTitle("Track Health Application")
-        self.setGeometry(39, 30, 716, 544)
+        self.setGeometry(120, 150, 716, 544)
         self.setFixedSize(716, 544)
         uic.loadUi("./ui/main.ui", self)
         # self.langage.activated[str].connect(self.set_langage)
