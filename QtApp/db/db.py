@@ -10,19 +10,18 @@ import pandas as pd
 
 
 # Modify db
-df = pd.read_csv("./login_accounts.csv")
-
+df = pd.read_csv(".\login_accounts.csv")
 # add new account
 
-# new_acc ={
-#     'usernames':'admin',
-#     'passwords' :'Ziko0384'
-#     }
+new_acc ={
+    'usernames':'admin',
+    'passwords' :'123'
+    }
 
-# df = pd.concat([df, pd.DataFrame([new_acc])], ignore_index=True)
+df = pd.concat([df, pd.DataFrame([new_acc])], ignore_index=True)
 
 
-# df.to_csv("login_accounts.csv",encoding='utf-8', index=False)
+df.to_csv("login_accounts.csv",encoding='utf-8', index=False)
 
 
 # verify account exists
