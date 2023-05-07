@@ -61,11 +61,11 @@ Notre solution de suivi à distance des signes vitaux des patients en réanimati
 
 - Tache 3: Programmation du microcontrôleur pour configurer la connexion Wi-Fi et la transmission des données via le protocole MQTT.
 
-- Tache 4 : Création d'une base de données PostgreSQL pour stocker les données collectées des capteurs.
+- Tache 4 : Création d'une base de données pour stocker les données collectées des capteurs.
 
 - Tache 5 : Développement d'une application Qt pour créer une interface utilisateur pour les professionnels de la santé pour accéder aux données collectées des capteurs.
 
-- Tache 6: Configuration du back-end Python pour recevoir les données du microcontrôleur ESP8266 et les stocker dans la base de données PostgreSQL.
+- Tache 6: Configuration du back-end Python pour recevoir les données du microcontrôleur ESP8266 et les stocker dans la base de données.
 
 - Tache 7 : Intégration de l'application Qt avec la base de données  pour afficher les données collectées en temps réel pour les professionnels de la santé.
 
