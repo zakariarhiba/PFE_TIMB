@@ -1416,22 +1416,6 @@ QDateEdit::down-arrow:focus {
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLineEdit" name="le_id">
-    <property name="geometry">
-     <rect>
-      <x>105</x>
-      <y>40</y>
-      <width>131</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="inputMask">
-     <string>ANNNNNNN</string>
-    </property>
-    <property name="placeholderText">
-     <string>.......................</string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="le_cin">
     <property name="geometry">
      <rect>
@@ -1702,14 +1686,30 @@ QPushButton::pressed
      <string>Description Court*</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="patient_desc">
+   <widget class="QLineEdit" name="patient_descrption">
     <property name="geometry">
      <rect>
       <x>180</x>
       <y>200</y>
-      <width>151</width>
+      <width>351</width>
       <height>31</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="le_id">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>40</y>
+      <width>141</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="inputMask">
+     <string>ANNNNNNNN</string>
+    </property>
+    <property name="placeholderText">
+     <string>.......................</string>
     </property>
    </widget>
   </widget>

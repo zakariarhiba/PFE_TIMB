@@ -180,30 +180,98 @@ class AjoutPatient(QMainWindow):
         self.button_ajoute_patient.clicked.connect(self.ajoutePatient)
 
     def getImage(self):
-        self.file_name, _ = QFileDialog.getOpenFileName(
-            self,
-            "Open Image File",
-            r"<Default dir>",
-            "Image files (*.jpg *.jpeg *.png)",
-        )
-        if self.file_name != "":
-            self.iamge_label.setPixmap(QPixmap(self.file_name))
-        self.iamge_label.repaint()
+        try:
+            self.file_name, _ = QFileDialog.getOpenFileName(
+                self,
+                "Open Image File",
+                r"<Default dir>",
+                "Image files (*.jpg *.jpeg *.png)",
+            )
+            if self.file_name != "":
+                self.iamge_label.setPixmap(QPixmap(self.file_name))
+            self.iamge_label.repaint()
+        except:
+            pass
         QApplication.processEvents()
 
     def ajoutePatient(self):
-        patient_id = self.le_id.text()
-        patient_cin = self.le_cin.text()
-        patient_nom = self.le_nom.text()
-        patinet_prenom = self.le_prenom.text()
-        patient_desc = self.patient_desc.text()
-        patient_maladie = self.te_descrption_maladie.toPlainText()
-        patient_sexe = self.cb_sexe.currentText()
-        patient_nationalite = self.cb_nationalite.currentText()
-        patient_img = f"{patient_id}{patient_cin}"
-        img = plt.imread(self.file_name)
-        plt.savefig(f"./patients_images/{patient_img}.jpg")
-        QApplication.processEvents()
+        if self.checkPatientData() == True:
+            self.patient_id = self.le_id.text()
+            self.patient_cin = self.le_cin.text()
+            self.patient_nom = self.le_nom.text()
+            self.patinet_prenom = self.le_prenom.text()
+            self.patient_desc = self.patient_descrption.text()
+            self.patient_maladie = self.te_descrption_maladie.toPlainText()
+            self.patient_sexe = self.cb_sexe.currentText()
+            self.patient_nationalite = self.cb_nationalite.currentText()
+            self.patient_img = f"{self.patient_id}{self.patient_cin}"
+            if self.patient_id == "":
+                self.patient_id = "NAN"
+            if self.patient_maladie == "":
+                self.patient_maladie = "NAN"
+            if self.file_name == "":
+                self.patient_img = ".\images\patient.png"
+            try:
+                img = plt.imread(self.file_name)
+                plt.savefig(f"./patients_images/{self.patient_img}.jpg")
+            except:
+                pass
+            QApplication.processEvents()
+            try:
+                self.sendDataToDb()
+            except:
+                QMessageBox.warning(
+                    self,
+                    "connection interrompue",
+                    "échec de la connexion à la base de données, réssayer plus tard",
+                )
+            else:
+                QMessageBox.information(
+                    self,
+                    "Patient Ajouter",
+                    "Votre Patient a été bien ajouter à la base de données, Bon retablissement",
+                )
+                self.le_id.setText("")
+                self.le_cin.setText("")
+                self.le_nom.setText("")
+                self.le_prenom.setText("")
+                self.patient_descrption.setText("")
+                self.te_descrption_maladie.clear()
+                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+                QApplication.processEvents()
+                interfaces.setCurrentWidget(home_window)
+        else:
+            QMessageBox.warning(
+                self,
+                "Manque d'informations",
+                "S'il te plait remplir les champs obligatoires",
+            )
+
+    def checkPatientData(self):
+        if (
+            self.le_cin.text() == ""
+            or self.le_nom.text() == ""
+            or self.le_prenom.text() == ""
+            or self.patient_descrption.text() == ""
+        ):
+            return False
+        return True
+
+    def sendDataToDb(self):
+        new_patient = {
+            "id": self.patient_id,
+            "cin": self.patient_cin,
+            "nom": self.patient_nom,
+            "prenom": self.patinet_prenom,
+            "sexe": self.patient_desc,
+            "nationalite": self.patient_maladie,
+            "desc_court": self.patient_sexe,
+            "desc_maladie": self.patient_nationalite,
+            "img_name": self.patient_img,
+        }
+        df = pd.read_csv(".\db\patients.csv")
+        df = pd.concat([df, pd.DataFrame([new_patient])], ignore_index=True)
+        df.to_csv(".\db\patients.csv", encoding="utf-8", index=False)
 
 
 class Patients(QMainWindow):
