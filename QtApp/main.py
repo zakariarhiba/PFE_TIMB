@@ -1,4 +1,10 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox, QFileDialog
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QStackedWidget,
+    QMessageBox,
+    QFileDialog,
+)
 from PyQt5 import uic, QtGui
 from PyQt5.QtGui import QPixmap
 import sys
@@ -147,14 +153,14 @@ class Patient(QMainWindow):
         self.button_retour.clicked.connect(
             lambda: interfaces.setCurrentWidget(home_window)
         )
-        
+
 
 class AjoutPatient(QMainWindow):
     def __init__(self):
         super().__init__()
         self.set_ui()
         self.trigged_buttons()
-        self.file_name = ''
+        self.file_name = ""
 
     def set_ui(self):
         self.setWindowTitle("Track Health Application")
@@ -172,18 +178,20 @@ class AjoutPatient(QMainWindow):
         )
         self.button_image.clicked.connect(self.getImage)
         self.button_ajoute_patient.clicked.connect(self.ajoutePatient)
-        
+
     def getImage(self):
-        self.file_name , _ = QFileDialog.getOpenFileName(self, 'Open Image File',\
-        r"<Default dir>", "Image files (*.jpg *.jpeg *.png)")
-        if self.file_name != "": 
+        self.file_name, _ = QFileDialog.getOpenFileName(
+            self,
+            "Open Image File",
+            r"<Default dir>",
+            "Image files (*.jpg *.jpeg *.png)",
+        )
+        if self.file_name != "":
             self.iamge_label.setPixmap(QPixmap(self.file_name))
         self.iamge_label.repaint()
         QApplication.processEvents()
-        
-        
-    def aj
-        outePatient(self):
+
+    def ajoutePatient(self):
         patient_id = self.le_id.text()
         patient_cin = self.le_cin.text()
         patient_nom = self.le_nom.text()
@@ -196,7 +204,8 @@ class AjoutPatient(QMainWindow):
         img = plt.imread(self.file_name)
         plt.savefig(f"./patients_images/{patient_img}.jpg")
         QApplication.processEvents()
-            
+
+
 class Patients(QMainWindow):
     def __init__(self):
         super().__init__()
