@@ -36,7 +36,19 @@ import pandas as pd
 
 # df = pd.concat([df, pd.DataFrame([new_acc])], ignore_index=True)
 
+dl_patient_nom = "SAAD"
+dl_patient_prenom = "EDDHAMANI"
 df = pd.read_csv(".\patients.csv")
+df = df[(df['nom'] == dl_patient_nom) & (df['prenom'] == dl_patient_prenom)  ] 
+patient_info = df.values.tolist()
+patient_info = patient_info[0]
+print(patient_info)
+
+
+# df = df.loc[(df["nom"] != dl_patient_nom) & (df["prenom"]!= dl_patient_prenom)]
+# df = df.loc[df["cin"] != 'BJ891222']
+
+
 # patient_id = "NAN"
 # patient_cin = "BJ467011"
 # patient_nom = "rhiba"
@@ -64,10 +76,12 @@ df = pd.read_csv(".\patients.csv")
 
 # df.to_csv("patients.csv",encoding='utf-8', index=False)
 
-patients_liste = df.values.tolist()
 
-for patient in patients_liste:
-    print(patient)
+
+# patients_liste = df.values.tolist()
+
+# for patient in patients_liste:
+#     print(patient)
 
 
 # verify account exists

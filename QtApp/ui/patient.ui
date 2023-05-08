@@ -1371,7 +1371,7 @@ QDateEdit::down-arrow:focus {
       <x>85</x>
       <y>90</y>
       <width>111</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="inputMask">
@@ -1379,6 +1379,9 @@ QDateEdit::down-arrow:focus {
     </property>
     <property name="maxLength">
      <number>20</number>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
     <property name="placeholderText">
      <string>.......................</string>
@@ -1422,11 +1425,14 @@ QDateEdit::down-arrow:focus {
       <x>85</x>
       <y>40</y>
       <width>111</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="inputMask">
      <string>&gt;NNNNNNNNNN</string>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
     <property name="placeholderText">
      <string>.......................</string>
@@ -1438,11 +1444,14 @@ QDateEdit::down-arrow:focus {
       <x>280</x>
       <y>40</y>
       <width>141</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="inputMask">
      <string>&gt;NNNNNNNN</string>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
     <property name="placeholderText">
      <string>.......................</string>
@@ -1454,11 +1463,14 @@ QDateEdit::down-arrow:focus {
       <x>85</x>
       <y>140</y>
       <width>111</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="inputMask">
      <string>&gt;aaaaaaaaaaaaaaaaaaaa</string>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
     <property name="placeholderText">
      <string>.......................</string>
@@ -1484,8 +1496,8 @@ QDateEdit::down-arrow:focus {
       <rect>
        <x>20</x>
        <y>30</y>
-       <width>111</width>
-       <height>101</height>
+       <width>121</width>
+       <height>131</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -1511,19 +1523,6 @@ QDateEdit::down-arrow:focus {
      </property>
      <property name="scaledContents">
       <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="button_image">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>140</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Import</string>
      </property>
     </widget>
    </widget>
@@ -1563,9 +1562,9 @@ QDateEdit::down-arrow:focus {
     <property name="geometry">
      <rect>
       <x>290</x>
-      <y>140</y>
+      <y>141</y>
       <width>111</width>
-      <height>22</height>
+      <height>21</height>
      </rect>
     </property>
     <item>
@@ -1610,29 +1609,13 @@ QDateEdit::down-arrow:focus {
      </property>
     </item>
    </widget>
-   <widget class="QLabel" name="label_13">
+   <widget class="QTextBrowser" name="tb_maladie">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>220</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Description Maladie</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="te_descrption_maladie">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>200</y>
+      <x>150</x>
+      <y>230</y>
       <width>351</width>
-      <height>101</height>
+      <height>81</height>
      </rect>
     </property>
    </widget>
@@ -1673,6 +1656,48 @@ QDateEdit::down-arrow:focus {
    </property>
    <property name="shortcut">
     <string>Esc</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>210</y>
+     <width>111</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Description Court*</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="patient_descrption">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>210</y>
+     <width>351</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_13">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>270</y>
+     <width>111</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Description Maladie</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
  </widget>

@@ -1,5 +1,4 @@
 id,cin,nom,prenom,sexe,nationalite,desc_court,desc_maladie,img_name
-NAN,BJ467011,rhiba,zakaria,churirgie poumon,churirgie poumon cause de fumer,Homme,Marocaine,NANBJ467011
-1234555,BJ891222,RHIBA,ALI,Churirgie sur tete,accident de travail,Homme,Marocain,1234555BJ891222
-12345678,BJZZZZ,SAAD,Moumen,accident de football,guerre avec police,Homme,Marocain,.\images\patient.png
-12424214,BJ119313,AMAL,YBEE,cancer de sand,maladie rare,Femme,Marocain,12424214BJ119313
+1234566,BJ173183,SAAD,EDDHAMANI,Homme,Marocain,chirurgie esthétique,chirurgie esthétique pour visage,1234566BJ173183
+NAN,BJA17381,BEALL,MARTIN,Femme,Marocain,chirurgie des poumons,chirurgie des poumons à cause de fumer,BJA17381
+39618638,BAE82789,AHMED,ABDLKADER,Homme,Marocain,chirurgie viscérale,"La chirurgie viscérale et digestive, est une branche particulière de la chirurgie.",39618638BAE82789
