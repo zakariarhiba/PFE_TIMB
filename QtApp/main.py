@@ -296,7 +296,35 @@ class Patients(QMainWindow):
         self.button_ajoute_patient.clicked.connect(
             lambda: interfaces.setCurrentWidget(ajoute_patient)
         )
-        self.button_fiche_patient.clicked.connect(lambda: self.goToPatient())
+        self.button_fiche_patient.clicked.connect(self.goToPatient)
+        self.button_rech.clicked.connect(self.recherche)
+        
+    def recherche(self):
+        key_cin = self.le_cin_rech.text()
+        print(key_cin)
+        try:
+            self.table_patients.clear()
+            df = pd.read_csv(".\db\patients.csv")
+            df = df[df['cin'] == key_cin] 
+            self.patients_liste = df.values.tolist()
+            rowPosition = self.table_patients.rowCount()
+            self.table_patients.insertRow(rowPosition)
+            self.table_patients.setRowCount(len(self.patients_liste))
+            row = 0
+            for patient in self.patients_liste:
+                self.table_patients.setItem(row, 0, QTableWidgetItem(patient[0]))
+                self.table_patients.setItem(row, 1, QTableWidgetItem(patient[1]))
+                self.table_patients.setItem(row, 2, QTableWidgetItem(patient[2]))
+                self.table_patients.setItem(row, 3, QTableWidgetItem(patient[3]))
+                self.table_patients.setItem(row, 4, QTableWidgetItem(patient[6]))
+                row = row + 1
+            if len(self.patients_liste) == 0:
+                self.labelEror.setText("Not found !")
+            else:
+                self.labelEror.setText("")
+        except:
+            self.labelEror.setText("Erreur Connection à BD")
+        
 
     def goToPatient(self):
         try:
