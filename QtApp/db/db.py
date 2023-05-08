@@ -11,20 +11,20 @@ import pandas as pd
 
 
 # create patients accounts database
-Patients = ({
-    'id':[],
-    'cin':[],
-    'nom' :[],
-    'prenom':[],
-    'sexe':[],
-    'nationalite':[],
-    'desc_court':[],
-    'desc_maladie':[],
-    'img_name':[]
-    })
-df = pd.DataFrame(Patients)
+# Patients = ({
+#     'id':[],
+#     'cin':[],
+#     'nom' :[],
+#     'prenom':[],
+#     'sexe':[],
+#     'nationalite':[],
+#     'desc_court':[],
+#     'desc_maladie':[],
+#     'img_name':[]
+#     })
+# df = pd.DataFrame(Patients)
 
-df.to_csv("patients.csv",encoding='utf-8', index=False)
+# df.to_csv("patients.csv",encoding='utf-8', index=False)
 # Modify db
 
 # add new account
@@ -37,32 +37,37 @@ df.to_csv("patients.csv",encoding='utf-8', index=False)
 # df = pd.concat([df, pd.DataFrame([new_acc])], ignore_index=True)
 
 df = pd.read_csv(".\patients.csv")
-patient_id = "NAN"
-patient_cin = "BJ467011"
-patient_nom = "rhiba"
-patinet_prenom = "zakaria"
-patient_desc = "churirgie poumon"
-patient_maladie = "churirgie poumon cause de fumer"
-patient_sexe = "Homme"
-patient_nationalite = "Marocaine"
-patient_img = f"{patient_id}{patient_cin}"
+# patient_id = "NAN"
+# patient_cin = "BJ467011"
+# patient_nom = "rhiba"
+# patinet_prenom = "zakaria"
+# patient_desc = "churirgie poumon"
+# patient_maladie = "churirgie poumon cause de fumer"
+# patient_sexe = "Homme"
+# patient_nationalite = "Marocaine"
+# patient_img = f"{patient_id}{patient_cin}"
 
-new_patient ={
-    'id':patient_id,
-    'cin':patient_cin,
-    'nom' :patient_nom,
-    'prenom':patinet_prenom,
-    'sexe':patient_desc,
-    'nationalite':patient_maladie,
-    'desc_court':patient_sexe,
-    'desc_maladie':patient_nationalite,
-    'img_name':patient_img
-    }
+# new_patient ={
+#     'id':patient_id,
+#     'cin':patient_cin,
+#     'nom' :patient_nom,
+#     'prenom':patinet_prenom,
+#     'sexe':patient_desc,
+#     'nationalite':patient_maladie,
+#     'desc_court':patient_sexe,
+#     'desc_maladie':patient_nationalite,
+#     'img_name':patient_img
+#     }
 
-df = pd.concat([df, pd.DataFrame([new_patient])], ignore_index=True)
+# df = pd.concat([df, pd.DataFrame([new_patient])], ignore_index=True)
 
 
-df.to_csv("patients.csv",encoding='utf-8', index=False)
+# df.to_csv("patients.csv",encoding='utf-8', index=False)
+
+patients_liste = df.values.tolist()
+
+for patient in patients_liste:
+    print(patient)
 
 
 # verify account exists

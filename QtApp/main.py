@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import (
     QStackedWidget,
     QMessageBox,
     QFileDialog,
+    QTableWidgetItem,
 )
 from PyQt5 import uic, QtGui
 from PyQt5.QtGui import QPixmap
@@ -128,9 +129,6 @@ class Home(QMainWindow):
         self.button_suprimer_patient.clicked.connect(
             lambda: interfaces.setCurrentWidget(patient_window)
         )
-        self.button_recherche.clicked.connect(
-            lambda: interfaces.setCurrentWidget(patient_window)
-        )
 
 
 class Patient(QMainWindow):
@@ -199,7 +197,7 @@ class AjoutPatient(QMainWindow):
             self.patient_id = self.le_id.text()
             self.patient_cin = self.le_cin.text()
             self.patient_nom = self.le_nom.text()
-            self.patinet_prenom = self.le_prenom.text()
+            self.patient_prenom = self.le_prenom.text()
             self.patient_desc = self.patient_descrption.text()
             self.patient_maladie = self.te_descrption_maladie.toPlainText()
             self.patient_sexe = self.cb_sexe.currentText()
@@ -262,11 +260,11 @@ class AjoutPatient(QMainWindow):
             "id": self.patient_id,
             "cin": self.patient_cin,
             "nom": self.patient_nom,
-            "prenom": self.patinet_prenom,
-            "sexe": self.patient_desc,
-            "nationalite": self.patient_maladie,
-            "desc_court": self.patient_sexe,
-            "desc_maladie": self.patient_nationalite,
+            "prenom": self.patient_prenom,
+            "sexe": self.patient_sexe,
+            "nationalite": self.patient_nationalite,
+            "desc_court": self.patient_desc,
+            "desc_maladie": self.patient_maladie,
             "img_name": self.patient_img,
         }
         df = pd.read_csv(".\db\patients.csv")
@@ -285,6 +283,7 @@ class Patients(QMainWindow):
         self.setGeometry(300, 400, 823, 563)
         self.setFixedSize(823, 563)
         uic.loadUi("./ui/patients.ui", self)
+        self.loadData()
         # self.langage.activated[str].connect(self.set_langage)
 
     def trigged_buttons(self):
@@ -294,6 +293,40 @@ class Patients(QMainWindow):
         self.button_retour.clicked.connect(
             lambda: interfaces.setCurrentWidget(home_window)
         )
+        self.button_ajoute_patient.clicked.connect(
+            lambda: interfaces.setCurrentWidget(ajoute_patient)
+        )
+        self.button_fiche_patient.clicked.connect(lambda: self.goToPatient())
+
+    def goToPatient(self):
+        try:
+            indexRow = self.table_patients.selectedIndexes()[0].row()
+            self.DataPatient = self.patients_liste[indexRow][0]
+            print(self.DataPatient)
+        except:
+            pass
+
+    def loadData(self):
+        try:
+            df = pd.read_csv(".\db\patients.csv")
+            self.patients_liste = df.values.tolist()
+            rowPosition = self.table_patients.rowCount()
+            self.table_patients.insertRow(rowPosition)
+            self.table_patients.setRowCount(len(self.patients_liste))
+            row = 0
+            for patient in self.patients_liste:
+                self.table_patients.setItem(row, 0, QTableWidgetItem(patient[0]))
+                self.table_patients.setItem(row, 1, QTableWidgetItem(patient[1]))
+                self.table_patients.setItem(row, 2, QTableWidgetItem(patient[2]))
+                self.table_patients.setItem(row, 3, QTableWidgetItem(patient[3]))
+                self.table_patients.setItem(row, 4, QTableWidgetItem(patient[6]))
+                row = row + 1
+            if len(self.patients_liste) == 0:
+                self.labelEror.setText("Not found !")
+            else:
+                self.labelEror.setText("")
+        except:
+            self.labelEror.setText("Erreur Connection à BD")
 
 
 if __name__ == "__main__":

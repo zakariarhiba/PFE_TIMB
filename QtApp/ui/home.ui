@@ -1273,10 +1273,10 @@ QDateEdit::down-arrow:focus {
   <widget class="QPushButton" name="button_consultation">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>230</y>
-     <width>251</width>
-     <height>201</height>
+     <x>140</x>
+     <y>160</y>
+     <width>301</width>
+     <height>241</height>
     </rect>
    </property>
    <property name="font">
@@ -1318,14 +1318,14 @@ QPushButton::pressed
 </string>
    </property>
    <property name="text">
-    <string>Consulter mes Patients</string>
+    <string>Consultation des Patients</string>
    </property>
   </widget>
   <widget class="QPushButton" name="button_ajoute_patient">
    <property name="geometry">
     <rect>
-     <x>420</x>
-     <y>210</y>
+     <x>460</x>
+     <y>160</y>
      <width>231</width>
      <height>71</height>
     </rect>
@@ -1346,8 +1346,8 @@ QPushButton::pressed
   <widget class="QPushButton" name="button_modifier_patient">
    <property name="geometry">
     <rect>
-     <x>420</x>
-     <y>300</y>
+     <x>460</x>
+     <y>250</y>
      <width>231</width>
      <height>71</height>
     </rect>
@@ -1368,8 +1368,8 @@ QPushButton::pressed
   <widget class="QPushButton" name="button_suprimer_patient">
    <property name="geometry">
     <rect>
-     <x>420</x>
-     <y>380</y>
+     <x>460</x>
+     <y>330</y>
      <width>231</width>
      <height>71</height>
     </rect>
@@ -1387,76 +1387,11 @@ QPushButton::pressed
     <string>Supprimer Patient</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="le_recherche_patient">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>130</y>
-     <width>291</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="button_recherche">
-   <property name="geometry">
-    <rect>
-     <x>450</x>
-     <y>130</y>
-     <width>191</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QPushButton
-{
-	background-color: #f0742f;
-	color: #fff;
-	font-weight: bold;
-	border-style: solid;
-	border-width: 1px;
-	border-color: #f0742f;
-	padding: 10px;
-
-}
-
-
-QPushButton::hover
-{
-	background-color: #fc7c11;
-	color: #fff;
-
-}
-
-
-QPushButton::pressed
-{
-	background-color: #ff6b35;
-	color: #fff;
-
-}
-</string>
-   </property>
-   <property name="text">
-    <string>Recherche Patient</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="button_deconnecter">
    <property name="geometry">
     <rect>
      <x>660</x>
-     <y>510</y>
+     <y>480</y>
      <width>111</width>
      <height>31</height>
     </rect>
