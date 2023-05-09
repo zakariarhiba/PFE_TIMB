@@ -86,7 +86,7 @@ class Login(QMainWindow):
                 )
                 self.lineEdit_password.setText("")
             else:
-                QMessageBox.warning(
+                QMessageBox.information(
                     self, "connection verfier", "Bonne santé à vos patients"
                 )
                 interfaces.setCurrentWidget(patients_window)
@@ -117,23 +117,26 @@ class Patient(QMainWindow):
         ]
         patient_info = df.values.tolist()
         patient_info = patient_info[0]
-        self.le_id.setText(patient_info[0])
+        print(patient_info)
+        self.le_id.setText(str(patient_info[0]))
         if patient_info[0] == "NAN":
             self.le_id.setText("-")
-        self.le_cin.setText(patient_info[1])
-        self.le_nom.setText(patient_info[2])
-        self.le_prenom.setText(patient_info[3])
-        self.cb_sexe.setCurrentText(patient_info[4])
-        self.cb_nationalite.setCurrentText(patient_info[5])
-        self.patient_descrption.setText(patient_info[6])
-        self.tb_maladie.setText(patient_info[7])
+        self.le_cin.setText(str(patient_info[1]))
+        self.le_nom.setText(str(patient_info[2]))
+        self.le_prenom.setText(str(patient_info[3]))
+        self.cb_sexe.setCurrentText(str(patient_info[4]))
+        self.cb_nationalite.setCurrentText(str(patient_info[5]))
+        self.patient_descrption.setText(str(patient_info[6]))
+        self.tb_maladie.setText(str(patient_info[7]))
         if patient_info[7] == "NAN":
             self.tb_maladie.setText("pas de descrpition")
         try:
-            if patient_info[8] != "":
+            if patient_info[8] != "" and patient_info[8] != "NAN":
                 img_link = f"./patients_images/{patient_info[8]}.jpg"
                 print(img_link)
                 self.iamge_label.setPixmap(QPixmap(img_link))
+            elif patient_info[8] == "NAN":
+                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
             self.iamge_label.repaint()
         except:
             pass
@@ -195,14 +198,14 @@ class AjoutPatient(QMainWindow):
 
     def ajoutePatient(self):
         if self.checkPatientData() == True:
-            self.patient_id = self.le_id.text()
-            self.patient_cin = self.le_cin.text()
-            self.patient_nom = self.le_nom.text()
-            self.patient_prenom = self.le_prenom.text()
-            self.patient_desc = self.patient_descrption.text()
-            self.patient_maladie = self.te_descrption_maladie.toPlainText()
-            self.patient_sexe = self.cb_sexe.currentText()
-            self.patient_nationalite = self.cb_nationalite.currentText()
+            self.patient_id = str(self.le_id.text())
+            self.patient_cin = str(self.le_cin.text())
+            self.patient_nom = str(self.le_nom.text())
+            self.patient_prenom = str(self.le_prenom.text())
+            self.patient_desc = str(self.patient_descrption.text())
+            self.patient_maladie = str(self.te_descrption_maladie.toPlainText())
+            self.patient_sexe = str(self.cb_sexe.currentText())
+            self.patient_nationalite = str(self.cb_nationalite.currentText())
             self.patient_img = f"{self.patient_id}{self.patient_cin}"
             if self.patient_id == "":
                 self.patient_id = "NAN"
@@ -239,7 +242,8 @@ class AjoutPatient(QMainWindow):
                 self.te_descrption_maladie.clear()
                 self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
                 QApplication.processEvents()
-                interfaces.setCurrentWidget(main_window)
+                interfaces.setCurrentWidget(patients_window)
+                patients_window.loadData()
         else:
             QMessageBox.warning(
                 self,
@@ -258,6 +262,178 @@ class AjoutPatient(QMainWindow):
         return True
 
     def sendDataToDb(self):
+        new_patient = {
+            "id": self.patient_id,
+            "cin": self.patient_cin,
+            "nom": self.patient_nom,
+            "prenom": self.patient_prenom,
+            "sexe": self.patient_sexe,
+            "nationalite": self.patient_nationalite,
+            "desc_court": self.patient_desc,
+            "desc_maladie": self.patient_maladie,
+            "img_name": self.patient_img,
+        }
+        df = pd.read_csv(".\db\patients.csv")
+        df = pd.concat([df, pd.DataFrame([new_patient])], ignore_index=True)
+        df.to_csv(".\db\patients.csv", encoding="utf-8", index=False)
+
+
+class ModifierPatient(QMainWindow):
+    patient_named = ""
+    patient_prenomd = ""
+
+    def __init__(self):
+        super().__init__()
+        self.set_ui()
+        self.trigged_buttons()
+        self.file_name = ""
+
+    def set_ui(self):
+        self.setWindowTitle("Track Health Application")
+        self.setGeometry(300, 400, 823, 563)
+        self.setFixedSize(823, 563)
+        uic.loadUi("./ui/modifier_patient.ui", self)
+        # self.langage.activated[str].connect(self.set_langage)
+
+    def trigged_buttons(self):
+        self.button_deconnecter.clicked.connect(
+            lambda: interfaces.setCurrentWidget(main_window)
+        )
+        self.button_retour.clicked.connect(
+            lambda: interfaces.setCurrentWidget(patients_window)
+        )
+        self.button_image.clicked.connect(self.getImage)
+        self.button_ajoute_patient.clicked.connect(self.ajoutePatient)
+
+    def loadPatientInfo(self):
+        df = pd.read_csv(".\db\patients.csv")
+        df = df[
+            (df["nom"] == self.patient_named) & (df["prenom"] == self.patient_prenomd)
+        ]
+        patient_info = df.values.tolist()
+        patient_info = patient_info[0]
+        print(patient_info)
+        self.le_id.setText(str(patient_info[0]))
+        if patient_info[0] == "NAN":
+            self.le_id.setText("-")
+        self.le_cin.setText(str(patient_info[1]))
+        self.le_nom.setText(str(patient_info[2]))
+        self.le_prenom.setText(str(patient_info[3]))
+        self.cb_sexe.setCurrentText(str(patient_info[4]))
+        self.cb_nationalite.setCurrentText(str(patient_info[5]))
+        self.patient_descrption.setText(str(patient_info[6]))
+        self.tb_maladie.setText(str(patient_info[7]))
+        if patient_info[7] == "NAN":
+            self.tb_maladie.setText("pas de descrpition")
+        try:
+            if patient_info[8] != "" and patient_info[8] != "NAN":
+                img_link = f"./patients_images/{patient_info[8]}.jpg"
+                print(img_link)
+                self.iamge_label.setPixmap(QPixmap(img_link))
+            elif patient_info[8] == "NAN":
+                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+            self.iamge_label.repaint()
+        except:
+            pass
+
+    def getImage(self):
+        try:
+            self.file_name, _ = QFileDialog.getOpenFileName(
+                self,
+                "Open Image File",
+                r"<Default dir>",
+                "Image files (*.jpg *.jpeg *.png)",
+            )
+            if self.file_name != "":
+                self.iamge_label.setPixmap(QPixmap(self.file_name))
+            self.iamge_label.repaint()
+        except:
+            pass
+        QApplication.processEvents()
+
+    def ajoutePatient(self):
+        if self.checkPatientData() == True:
+            self.patient_id = str(self.le_id.text())
+            self.patient_cin = str(self.le_cin.text())
+            self.patient_nom = str(self.le_nom.text())
+            self.patient_prenom = str(self.le_prenom.text())
+            self.patient_desc = str(self.patient_descrption.text())
+            self.patient_maladie = str(self.tb_maladie.toPlainText())
+            self.patient_sexe = str(self.cb_sexe.currentText())
+            self.patient_nationalite = str(self.cb_nationalite.currentText())
+            self.patient_img = f"{self.patient_id}{self.patient_cin}"
+            if self.patient_id == "":
+                self.patient_id = "NAN"
+            if self.patient_maladie == "":
+                self.patient_maladie = "NAN"
+            if self.file_name == "":
+                self.patient_img = "NAN"
+            try:
+                img_PIL = Image.open(self.file_name)
+                display(img_PIL)
+                img_PIL.save(f"./patients_images/{self.patient_img}.jpg")
+            except:
+                print("doesn't save image")
+            QApplication.processEvents()
+            try:
+                self.sendDataToDb()
+            except:
+                QMessageBox.warning(
+                    self,
+                    "connection interrompue",
+                    "échec de la connexion à la base de données, réssayer plus tard",
+                )
+            else:
+                QMessageBox.information(
+                    self,
+                    "Patient Data Modifier",
+                    "Votre Patient a été bien corriger ses données, Bon retablissement",
+                )
+                self.le_id.setText("")
+                self.le_cin.setText("")
+                self.le_nom.setText("")
+                self.le_prenom.setText("")
+                self.patient_descrption.setText("")
+                self.tb_maladie.clear()
+                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+                self.deletePatient(self.patient_named, self.patient_prenomd)
+                QApplication.processEvents()
+                interfaces.setCurrentWidget(patients_window)
+                patients_window.loadData()
+        else:
+            QMessageBox.warning(
+                self,
+                "Manque d'informations",
+                "S'il te plait remplir les champs obligatoires",
+            )
+            
+    def deletePatient(self,dl_patient_nom,dl_patient_prenom):
+        try:
+            df = pd.read_csv(".\db\patients.csv")
+            df = df.loc[
+                (df["nom"] != dl_patient_nom) & (df["prenom"] != dl_patient_prenom)
+            ]
+            df.to_csv(".\db\patients.csv", encoding="utf-8", index=False)
+        except:
+            QMessageBox.information(
+                self,
+                "Operation Echoué",
+                "Veuillerz réssayer plus tard",
+            )
+        
+
+    def checkPatientData(self):
+        if (
+            self.le_cin.text() == ""
+            or self.le_nom.text() == ""
+            or self.le_prenom.text() == ""
+            or self.patient_descrption.text() == ""
+        ):
+            return False
+        return True
+
+    def sendDataToDb(self):
+        # should change the old with the new data here
         new_patient = {
             "id": self.patient_id,
             "cin": self.patient_cin,
@@ -294,6 +470,7 @@ class Patients(QMainWindow):
         self.button_deconnecter.clicked.connect(
             lambda: interfaces.setCurrentWidget(main_window)
         )
+        self.button_modifier_patient.clicked.connect(lambda: self.goToModifierPatient())
         self.button_retour.clicked.connect(
             lambda: interfaces.setCurrentWidget(main_window)
         )
@@ -369,6 +546,21 @@ class Patients(QMainWindow):
             self.labelEror.setText("")
             interfaces.setCurrentWidget(patient_window)
 
+    def goToModifierPatient(self):
+        try:
+            indexRow = self.table_patients.selectedIndexes()[0].row()
+            dl_patient_nom = self.patients_liste[indexRow][2]
+            dl_patient_prenom = self.patients_liste[indexRow][3]
+            modifier_patient.patient_named = dl_patient_nom
+            modifier_patient.patient_prenomd = dl_patient_prenom
+            print("ok")
+            modifier_patient.loadPatientInfo()
+        except:
+            self.labelEror.setText("Erreur Connection à BD I don't know why")
+        else:
+            self.labelEror.setText("")
+            interfaces.setCurrentWidget(modifier_patient)
+
     def loadData(self):
         try:
             df = pd.read_csv(".\db\patients.csv")
@@ -377,6 +569,7 @@ class Patients(QMainWindow):
             self.table_patients.insertRow(rowPosition)
             self.table_patients.setRowCount(len(self.patients_liste))
             row = 0
+            self.patients_liste.reverse()
             for patient in self.patients_liste:
                 self.table_patients.setItem(row, 0, QTableWidgetItem(f"{patient[0]}"))
                 if patient[0] == "NAN":
@@ -403,11 +596,13 @@ if __name__ == "__main__":
     patient_window = Patient()
     patients_window = Patients()
     ajoute_patient = AjoutPatient()
+    modifier_patient = ModifierPatient()
     interfaces.addWidget(main_window)
     interfaces.addWidget(login_window)
     interfaces.addWidget(patient_window)
     interfaces.addWidget(patients_window)
     interfaces.addWidget(ajoute_patient)
+    interfaces.addWidget(modifier_patient)
     interfaces.show()
     interfaces.setWindowTitle("Track Health Application")
     interfaces.setFixedSize(823, 563)

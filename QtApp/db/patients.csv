@@ -1,4 +1,5 @@
 id,cin,nom,prenom,sexe,nationalite,desc_court,desc_maladie,img_name
-1234566,BJ173183,SAAD,EDDHAMANI,Homme,Marocain,chirurgie esthétique,chirurgie esthétique pour visage,1234566BJ173183
-NAN,BJA17381,BEALL,MARTIN,Femme,Marocain,chirurgie des poumons,chirurgie des poumons à cause de fumer,BJA17381
-39618638,BAE82789,AHMED,ABDLKADER,Homme,Marocain,chirurgie viscérale,"La chirurgie viscérale et digestive, est une branche particulière de la chirurgie.",39618638BAE82789
+11111111,BJZ17811,AHMED,ABDJALLA,Homme,Marocain,chirurgie viscérale,"La chirurgie viscérale et digestive, est une branche particulière de la chirurgie",11111111BJZ17811
+22222222,BJAYEN22,AIIZN,ABIIR,Femme,Marocain,chirurgie esthétique,chirurgie esthétique pour visage ,22222222BJAYEN22
+NAN,A3212913,Mohamed,ILKAA,Homme,Marocain,churirgie des poumons,churirgie des poumons à cause de fumer,NAN
+3333333,BJ128121,JAAFAR,MODIFE,Homme,Marocain,maladie rare,maladie rare à cause de leur age,NAN
