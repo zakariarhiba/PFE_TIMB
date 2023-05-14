@@ -1764,6 +1764,52 @@ QPushButton::pressed
     <string>* Champs Obligagtoire</string>
    </property>
   </widget>
+  <widget class="QComboBox" name="cb_moniteur">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>260</y>
+     <width>111</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Active</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Deactive</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>260</y>
+     <width>47</width>
+     <height>13</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Moniteur</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_18">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>520</y>
+     <width>391</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="../../../Workspace/DUT-SE/stage d'obs/stageProject/rsurc.qrc"/>

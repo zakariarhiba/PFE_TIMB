@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>823</width>
-    <height>563</height>
+    <height>564</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1457,11 +1457,6 @@
     </attribute>
     <column>
      <property name="text">
-      <string>ID</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
       <string>CIN</string>
      </property>
     </column>
@@ -1473,6 +1468,11 @@
     <column>
      <property name="text">
       <string>Prénom</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Moniteur</string>
      </property>
     </column>
     <column>

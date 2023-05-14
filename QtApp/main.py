@@ -12,6 +12,43 @@ import sys
 import pandas as pd
 from IPython.display import display
 from PIL import Image
+import paho.mqtt.client as paho
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from time import sleep
+
+
+class MqttApp(QThread):
+    spio2 = pyqtSignal(str)
+    temp = pyqtSignal(str)
+
+    def run(self):
+        self.client = paho.Client()
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+        self.client.on_publish = self.on_publish
+        self.client.connect("test.mosquitto.org", 1883, 60)
+        self.client.loop_forever()
+
+    def on_connect(self, client, userdata, flags, rc):
+        self.client.subscribe("moniteurCHU/temp")
+        self.client.subscribe("moniteurCHU/spio2")
+
+    def on_message(self, client, userdata, msg):
+        topic, message = msg.topic, msg.payload.decode("utf-8")
+        print(topic + " -> " + str(message))
+        if topic == "moniteurCHU/temp":
+            self.temp.emit(str(message))
+        elif topic == "moniteurCHU/spio2":
+            self.spio2.emit(message)
+
+    def on_publish(self, client, userdata, result):
+        print("data published")
+
+    def publish_msg(self, topic, message):
+        ret = self.client.publish(topic, message)
+
+
+# still need image deleted from patient images folder
 
 
 class Main(QMainWindow):
@@ -101,62 +138,6 @@ class Login(QMainWindow):
             )
 
 
-class Patient(QMainWindow):
-    patient_name = ""
-    patient_prenom = ""
-
-    def __init__(self):
-        super().__init__()
-        self.set_ui()
-        self.trigged_buttons()
-
-    def loadPatientInfo(self):
-        df = pd.read_csv(".\db\patients.csv")
-        df = df[
-            (df["nom"] == self.patient_name) & (df["prenom"] == self.patient_prenom)
-        ]
-        patient_info = df.values.tolist()
-        patient_info = patient_info[0]
-        print(patient_info)
-        self.le_id.setText(str(patient_info[0]))
-        if patient_info[0] == "NAN":
-            self.le_id.setText("-")
-        self.le_cin.setText(str(patient_info[1]))
-        self.le_nom.setText(str(patient_info[2]))
-        self.le_prenom.setText(str(patient_info[3]))
-        self.cb_sexe.setCurrentText(str(patient_info[4]))
-        self.cb_nationalite.setCurrentText(str(patient_info[5]))
-        self.patient_descrption.setText(str(patient_info[6]))
-        self.tb_maladie.setText(str(patient_info[7]))
-        if patient_info[7] == "NAN":
-            self.tb_maladie.setText("pas de descrpition")
-        try:
-            if patient_info[8] != "" and patient_info[8] != "NAN":
-                img_link = f"./patients_images/{patient_info[8]}.jpg"
-                print(img_link)
-                self.iamge_label.setPixmap(QPixmap(img_link))
-            elif patient_info[8] == "NAN":
-                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
-            self.iamge_label.repaint()
-        except:
-            pass
-
-    def set_ui(self):
-        self.setWindowTitle("Track Health Application")
-        self.setGeometry(300, 400, 823, 563)
-        self.setFixedSize(823, 563)
-        uic.loadUi("./ui/patient.ui", self)
-        # self.langage.activated[str].connect(self.set_langage)
-
-    def trigged_buttons(self):
-        self.button_deconnecter.clicked.connect(
-            lambda: interfaces.setCurrentWidget(main_window)
-        )
-        self.button_retour.clicked.connect(
-            lambda: interfaces.setCurrentWidget(patients_window)
-        )
-
-
 class AjoutPatient(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -206,6 +187,7 @@ class AjoutPatient(QMainWindow):
             self.patient_maladie = str(self.te_descrption_maladie.toPlainText())
             self.patient_sexe = str(self.cb_sexe.currentText())
             self.patient_nationalite = str(self.cb_nationalite.currentText())
+            self.moniteur_statut = str(self.cb_moniteur.currentText())
             self.patient_img = f"{self.patient_id}{self.patient_cin}"
             if self.patient_id == "":
                 self.patient_id = "NAN"
@@ -267,6 +249,7 @@ class AjoutPatient(QMainWindow):
             "cin": self.patient_cin,
             "nom": self.patient_nom,
             "prenom": self.patient_prenom,
+            "moniteur_statut": self.moniteur_statut,
             "sexe": self.patient_sexe,
             "nationalite": self.patient_nationalite,
             "desc_court": self.patient_desc,
@@ -406,8 +389,8 @@ class ModifierPatient(QMainWindow):
                 "Manque d'informations",
                 "S'il te plait remplir les champs obligatoires",
             )
-            
-    def deletePatient(self,dl_patient_nom,dl_patient_prenom):
+
+    def deletePatient(self, dl_patient_nom, dl_patient_prenom):
         try:
             df = pd.read_csv(".\db\patients.csv")
             df = df.loc[
@@ -420,7 +403,6 @@ class ModifierPatient(QMainWindow):
                 "Operation Echoué",
                 "Veuillerz réssayer plus tard",
             )
-        
 
     def checkPatientData(self):
         if (
@@ -463,7 +445,7 @@ class Patients(QMainWindow):
         uic.loadUi("./ui/patients.ui", self)
         self.loadData()
         # self.langage.activated[str].connect(self.set_langage)
-        self.tableColumns = ["ID", "CIN", "NOM", "PRENOM", "Description"]
+        self.tableColumns = ["CIN", "Nom", "Prénom", "Moniteur", "Description"]
         self.table_patients.setHorizontalHeaderLabels(self.tableColumns)
 
     def trigged_buttons(self):
@@ -517,10 +499,10 @@ class Patients(QMainWindow):
                 self.table_patients.setRowCount(len(self.patients_liste))
                 row = 0
                 for patient in self.patients_liste:
-                    self.table_patients.setItem(row, 0, QTableWidgetItem(patient[0]))
-                    self.table_patients.setItem(row, 1, QTableWidgetItem(patient[1]))
-                    self.table_patients.setItem(row, 2, QTableWidgetItem(patient[2]))
-                    self.table_patients.setItem(row, 3, QTableWidgetItem(patient[3]))
+                    self.table_patients.setItem(row, 0, QTableWidgetItem(patient[1]))
+                    self.table_patients.setItem(row, 1, QTableWidgetItem(patient[2]))
+                    self.table_patients.setItem(row, 2, QTableWidgetItem(patient[3]))
+                    self.table_patients.setItem(row, 3, QTableWidgetItem(patient[4]))
                     self.table_patients.setItem(row, 4, QTableWidgetItem(patient[6]))
                     row = row + 1
                 if len(self.patients_liste) == 0:
@@ -571,12 +553,10 @@ class Patients(QMainWindow):
             row = 0
             self.patients_liste.reverse()
             for patient in self.patients_liste:
-                self.table_patients.setItem(row, 0, QTableWidgetItem(f"{patient[0]}"))
-                if patient[0] == "NAN":
-                    self.table_patients.setItem(row, 0, QTableWidgetItem(""))
-                self.table_patients.setItem(row, 1, QTableWidgetItem(f"{patient[1]}"))
-                self.table_patients.setItem(row, 2, QTableWidgetItem(f"{patient[2]}"))
-                self.table_patients.setItem(row, 3, QTableWidgetItem(f"{patient[3]}"))
+                self.table_patients.setItem(row, 0, QTableWidgetItem(f"{patient[1]}"))
+                self.table_patients.setItem(row, 1, QTableWidgetItem(f"{patient[2]}"))
+                self.table_patients.setItem(row, 2, QTableWidgetItem(f"{patient[3]}"))
+                self.table_patients.setItem(row, 3, QTableWidgetItem(f"{patient[4]}"))
                 self.table_patients.setItem(row, 4, QTableWidgetItem(f"{patient[6]}"))
                 row = row + 1
             if len(self.patients_liste) == 0:
@@ -585,6 +565,151 @@ class Patients(QMainWindow):
                 self.labelEror.setText("")
         except:
             self.labelEror.setText("Erreur Connection à BD")
+
+
+class Patient(QMainWindow):
+    patient_name = ""
+    patient_prenom = ""
+    statutM = ""
+
+    def __init__(self):
+        super().__init__()
+        self.set_ui()
+        self.trigged_buttons()
+
+    def loadPatientInfo(self):
+        self.labelEror.setText("")
+        df = pd.read_csv(".\db\patients.csv")
+        df = df[
+            (df["nom"] == self.patient_name) & (df["prenom"] == self.patient_prenom)
+        ]
+        patient_info = df.values.tolist()
+        patient_info = patient_info[0]
+        self.le_id.setText(str(patient_info[0]))
+        if patient_info[0] == "NAN":
+            self.le_id.setText("-")
+        self.le_cin.setText(str(patient_info[1]))
+        self.le_nom.setText(str(patient_info[2]))
+        self.le_prenom.setText(str(patient_info[3]))
+        self.cb_moniteur.setCurrentText(str(patient_info[4]))
+        self.cb_sexe.setCurrentText(str(patient_info[5]))
+        self.cb_nationalite.setCurrentText(str(patient_info[6]))
+        self.patient_descrption.setText(str(patient_info[7]))
+        self.tb_maladie.setText(str(patient_info[8]))
+
+        if str(patient_info[4]) == "Deactive":
+            self.statutM = "N"
+        else:
+            self.statutM = "Y"
+        if patient_info[8] == "NAN":
+            self.tb_maladie.setText("pas de descrpition")
+        try:
+            if patient_info[9] != "" and patient_info[9] != "NAN":
+                img_link = f"./patients_images/{patient_info[9]}.jpg"
+                print(img_link)
+                self.iamge_label.setPixmap(QPixmap(img_link))
+            elif patient_info[9] == "NAN":
+                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+            self.iamge_label.repaint()
+        except:
+            pass
+
+    def set_ui(self):
+        self.setWindowTitle("Track Health Application")
+        self.setGeometry(300, 400, 823, 563)
+        self.setFixedSize(823, 563)
+        uic.loadUi("./ui/patient.ui", self)
+        # self.langage.activated[str].connect(self.set_langage)
+
+    def trigged_buttons(self):
+        self.button_deconnecter.clicked.connect(
+            lambda: interfaces.setCurrentWidget(main_window)
+        )
+        self.button_retour.clicked.connect(
+            lambda: interfaces.setCurrentWidget(patients_window)
+        )
+        self.button_moniteur.clicked.connect(lambda: self.goToMoniteur())
+
+    def goToMoniteur(self):
+        try:
+            moniteur_patient.patient_name = self.patient_name
+            moniteur_patient.patient_prenom = self.patient_prenom
+            if self.statutM == "N":
+                self.labelEror.setText("Patient Don't Have Moniteur")
+            elif self.statutM == "Y":
+                moniteur_patient.loadPatientInfo()
+                self.labelEror.setText("")
+                interfaces.setCurrentWidget(moniteur_patient)
+        except:
+            self.labelEror.setText("Erreur Connection à Moniteur")
+
+
+class Moniteur(QMainWindow):
+    patient_name = ""
+    patient_prenom = ""
+
+    def __init__(self):
+        super().__init__()
+        self.set_ui()
+        self.trigged_buttons()
+
+    def set_temp(self, temp):
+        self.temperature_value.display(str(temp))
+
+    def set_spio2(self, spio2):
+        self.spio2_value.display(str(spio2))
+
+    def loadPatientInfo(self):
+        df = pd.read_csv(".\db\patients.csv")
+        df = df[
+            (df["nom"] == self.patient_name) & (df["prenom"] == self.patient_prenom)
+        ]
+        patient_info = df.values.tolist()
+        patient_info = patient_info[0]
+        self.le_id.setText(str(patient_info[0]))
+        if patient_info[0] == "NAN":
+            self.le_id.setText("-")
+        self.le_cin.setText(str(patient_info[1]))
+        self.le_nom.setText(str(patient_info[2]))
+        self.le_prenom.setText(str(patient_info[3]))
+        self.cb_sexe.setCurrentText(str(patient_info[5]))
+        self.cb_nationalite.setCurrentText(str(patient_info[6]))
+        try:
+            if patient_info[9] != "" and patient_info[9] != "NAN":
+                img_link = f"./patients_images/{patient_info[9]}.jpg"
+                print(img_link)
+                self.iamge_label.setPixmap(QPixmap(img_link))
+            elif patient_info[9] == "NAN":
+                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+            self.iamge_label.repaint()
+        except:
+            pass
+
+    def set_ui(self):
+        self.setWindowTitle("Track Health Application")
+        self.setGeometry(300, 400, 823, 563)
+        self.setFixedSize(823, 563)
+        uic.loadUi("./ui/moniteur.ui", self)
+        # self.langage.activated[str].connect(self.set_langage)
+
+    def trigged_buttons(self):
+        self.button_deconnecter.clicked.connect(
+            lambda: interfaces.setCurrentWidget(main_window)
+        )
+        self.button_retour.clicked.connect(lambda: self.goToPatient())
+
+    def goToPatient(self):
+        try:
+            dl_patient_nom = self.patient_name
+            dl_patient_prenom = self.patient_prenom
+            patient_window.patient_name = dl_patient_nom
+            patient_window.patient_prenom = dl_patient_prenom
+            patient_window.loadPatientInfo()
+        except:
+            self.labelEror.setText("Erreur Connection à BD")
+        else:
+            self.labelEror.setText("")
+            interfaces.setCurrentWidget(patient_window)
 
 
 if __name__ == "__main__":
@@ -597,12 +722,14 @@ if __name__ == "__main__":
     patients_window = Patients()
     ajoute_patient = AjoutPatient()
     modifier_patient = ModifierPatient()
+    moniteur_patient = Moniteur()
     interfaces.addWidget(main_window)
     interfaces.addWidget(login_window)
     interfaces.addWidget(patient_window)
     interfaces.addWidget(patients_window)
     interfaces.addWidget(ajoute_patient)
     interfaces.addWidget(modifier_patient)
+    interfaces.addWidget(moniteur_patient)
     interfaces.show()
     interfaces.setWindowTitle("Track Health Application")
     interfaces.setFixedSize(823, 563)
