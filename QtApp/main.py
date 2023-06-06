@@ -51,8 +51,6 @@ class MqttApp(QThread):
             self.temp.emit(str(message))
         elif topic == "moniteurCHU/spio2":
             self.spio2.emit(message)
-        elif topic == "moniteurCHU/humidity":
-            self.humidity.emit(message)
         elif topic == "mntrCHU/plsRate":
             self.pulse_rate.emit(message)
 
