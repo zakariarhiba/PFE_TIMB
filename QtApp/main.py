@@ -16,10 +16,20 @@ import paho.mqtt.client as paho
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from time import sleep
 
+import smtplib, ssl
+
+smtp_server = "smtp.gmail.com"
+port = 465    # For SMTP
+sender_email = "zakariarhiba21@gmail.com"
+password = "Ziko0384Qqhi"
+
+context = ssl.create_default_context()
+
 
 class MqttApp(QThread):
     spio2 = pyqtSignal(str)
     temp = pyqtSignal(str)
+    pulse_rate = pyqtSignal(str)
 
     def run(self):
         self.client = paho.Client()
@@ -32,6 +42,7 @@ class MqttApp(QThread):
     def on_connect(self, client, userdata, flags, rc):
         self.client.subscribe("moniteurCHU/temp")
         self.client.subscribe("moniteurCHU/spio2")
+        self.client.subscribe("mntrCHU/plsRate")
 
     def on_message(self, client, userdata, msg):
         topic, message = msg.topic, msg.payload.decode("utf-8")
@@ -40,6 +51,10 @@ class MqttApp(QThread):
             self.temp.emit(str(message))
         elif topic == "moniteurCHU/spio2":
             self.spio2.emit(message)
+        elif topic == "moniteurCHU/humidity":
+            self.humidity.emit(message)
+        elif topic == "mntrCHU/plsRate":
+            self.pulse_rate.emit(message)
 
     def on_publish(self, client, userdata, result):
         print("data published")
@@ -264,6 +279,7 @@ class AjoutPatient(QMainWindow):
 class ModifierPatient(QMainWindow):
     patient_named = ""
     patient_prenomd = ""
+    file_name = ""
 
     def __init__(self):
         super().__init__()
@@ -288,32 +304,43 @@ class ModifierPatient(QMainWindow):
         self.button_image.clicked.connect(self.getImage)
         self.button_ajoute_patient.clicked.connect(self.ajoutePatient)
 
+    def __init__(self):
+        super().__init__()
+        self.set_ui()
+        self.trigged_buttons()
+
     def loadPatientInfo(self):
+        self.labelEror.setText("")
         df = pd.read_csv(".\db\patients.csv")
         df = df[
             (df["nom"] == self.patient_named) & (df["prenom"] == self.patient_prenomd)
         ]
         patient_info = df.values.tolist()
         patient_info = patient_info[0]
-        print(patient_info)
         self.le_id.setText(str(patient_info[0]))
         if patient_info[0] == "NAN":
             self.le_id.setText("-")
         self.le_cin.setText(str(patient_info[1]))
         self.le_nom.setText(str(patient_info[2]))
         self.le_prenom.setText(str(patient_info[3]))
-        self.cb_sexe.setCurrentText(str(patient_info[4]))
-        self.cb_nationalite.setCurrentText(str(patient_info[5]))
-        self.patient_descrption.setText(str(patient_info[6]))
-        self.tb_maladie.setText(str(patient_info[7]))
-        if patient_info[7] == "NAN":
+        self.cb_moniteur.setCurrentText(str(patient_info[4]))
+        self.cb_sexe.setCurrentText(str(patient_info[5]))
+        self.cb_nationalite.setCurrentText(str(patient_info[6]))
+        self.patient_descrption.setText(str(patient_info[7]))
+        self.tb_maladie.setText(str(patient_info[8]))
+
+        if str(patient_info[4]) == "Deactive":
+            self.statutM = "N"
+        else:
+            self.statutM = "Y"
+        if patient_info[8] == "NAN":
             self.tb_maladie.setText("pas de descrpition")
         try:
-            if patient_info[8] != "" and patient_info[8] != "NAN":
-                img_link = f"./patients_images/{patient_info[8]}.jpg"
+            if patient_info[9] != "" and patient_info[9] != "NAN":
+                img_link = f"./patients_images/{patient_info[9]}.jpg"
                 print(img_link)
                 self.iamge_label.setPixmap(QPixmap(img_link))
-            elif patient_info[8] == "NAN":
+            elif patient_info[9] == "NAN":
                 self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
             self.iamge_label.repaint()
         except:
@@ -342,6 +369,7 @@ class ModifierPatient(QMainWindow):
             self.patient_prenom = str(self.le_prenom.text())
             self.patient_desc = str(self.patient_descrption.text())
             self.patient_maladie = str(self.tb_maladie.toPlainText())
+            self.moniteur_statut = str(self.cb_moniteur.currentText())
             self.patient_sexe = str(self.cb_sexe.currentText())
             self.patient_nationalite = str(self.cb_nationalite.currentText())
             self.patient_img = f"{self.patient_id}{self.patient_cin}"
@@ -415,12 +443,12 @@ class ModifierPatient(QMainWindow):
         return True
 
     def sendDataToDb(self):
-        # should change the old with the new data here
         new_patient = {
             "id": self.patient_id,
             "cin": self.patient_cin,
             "nom": self.patient_nom,
             "prenom": self.patient_prenom,
+            "moniteur_statut": self.moniteur_statut,
             "sexe": self.patient_sexe,
             "nationalite": self.patient_nationalite,
             "desc_court": self.patient_desc,
@@ -503,7 +531,7 @@ class Patients(QMainWindow):
                     self.table_patients.setItem(row, 1, QTableWidgetItem(patient[2]))
                     self.table_patients.setItem(row, 2, QTableWidgetItem(patient[3]))
                     self.table_patients.setItem(row, 3, QTableWidgetItem(patient[4]))
-                    self.table_patients.setItem(row, 4, QTableWidgetItem(patient[6]))
+                    self.table_patients.setItem(row, 4, QTableWidgetItem(patient[7]))
                     row = row + 1
                 if len(self.patients_liste) == 0:
                     self.labelEror.setText("Not found !")
@@ -557,7 +585,7 @@ class Patients(QMainWindow):
                 self.table_patients.setItem(row, 1, QTableWidgetItem(f"{patient[2]}"))
                 self.table_patients.setItem(row, 2, QTableWidgetItem(f"{patient[3]}"))
                 self.table_patients.setItem(row, 3, QTableWidgetItem(f"{patient[4]}"))
-                self.table_patients.setItem(row, 4, QTableWidgetItem(f"{patient[6]}"))
+                self.table_patients.setItem(row, 4, QTableWidgetItem(f"{patient[7]}"))
                 row = row + 1
             if len(self.patients_liste) == 0:
                 self.labelEror.setText("Not found !")
@@ -652,12 +680,19 @@ class Moniteur(QMainWindow):
         super().__init__()
         self.set_ui()
         self.trigged_buttons()
+        self.start_subscribing()
 
     def set_temp(self, temp):
-        self.temperature_value.display(str(temp))
+        self.temperature_value.display(temp)
+        print(f"temp : {temp}")
 
     def set_spio2(self, spio2):
-        self.spio2_value.display(str(spio2))
+        self.progressBar_spo2.setValue(int(spio2))
+        print(f"Spio2 : {spio2}")
+
+    def set_pulse_rate(self, puls_rate):
+        self.puls_rate.display(puls_rate)
+        print(f"puls_rate : {puls_rate}")
 
     def loadPatientInfo(self):
         df = pd.read_csv(".\db\patients.csv")
@@ -710,6 +745,13 @@ class Moniteur(QMainWindow):
         else:
             self.labelEror.setText("")
             interfaces.setCurrentWidget(patient_window)
+
+    def start_subscribing(self):
+        self.thread = MqttApp()
+        self.thread.temp.connect(self.set_temp)
+        self.thread.spio2.connect(self.set_spio2)
+        self.thread.pulse_rate.connect(self.set_pulse_rate)
+        self.thread.start()
 
 
 if __name__ == "__main__":

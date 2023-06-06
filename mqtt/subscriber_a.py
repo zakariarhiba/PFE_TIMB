@@ -4,18 +4,13 @@ import paho.mqtt.client as mqtt
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    client.subscribe("tkhrbika/youss")
-    client.subscribe("CoreElectronics/reserve")
+    client.subscribe("moniteurCHU/pulse_rate")
 
 
 def on_message(client, userdata, msg):
     topic, message = msg.topic, msg.payload.decode("utf-8")
-   
     print(topic + " -> " + str(message))
-    
-    if topic == "tkhrbika/youss":
-        print("yess we did it")
-    
+
 
 client = mqtt.Client()
 client.on_connect = on_connect

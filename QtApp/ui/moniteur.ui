@@ -1519,7 +1519,7 @@ QDateEdit::down-arrow:focus {
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../images/patient.png</pixmap>
+      <pixmap>../../../../../.designer/images/patient.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -1612,7 +1612,7 @@ QDateEdit::down-arrow:focus {
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>100</x>
       <y>220</y>
       <width>121</width>
       <height>21</height>
@@ -1625,7 +1625,7 @@ QDateEdit::down-arrow:focus {
    <widget class="QLCDNumber" name="temperature_value">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>30</x>
       <y>250</y>
       <width>101</width>
       <height>41</height>
@@ -1642,8 +1642,8 @@ QDateEdit::down-arrow:focus {
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>220</y>
+      <x>350</x>
+      <y>230</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -1652,11 +1652,24 @@ QDateEdit::down-arrow:focus {
      <string>SPiO2</string>
     </property>
    </widget>
-   <widget class="QLCDNumber" name="spio2_value">
+   <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>250</y>
+      <x>170</x>
+      <y>340</y>
+      <width>121</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Fréquence Cardiaque</string>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="puls_rate">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>370</y>
       <width>101</width>
       <height>41</height>
      </rect>
@@ -1667,6 +1680,83 @@ QDateEdit::down-arrow:focus {
       <weight>75</weight>
       <bold>true</bold>
      </font>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar_spo2">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>260</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="value">
+     <number>98</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>360</y>
+      <width>91</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../images/pulserate.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>240</y>
+      <width>71</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../images/spo2.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>250</y>
+      <width>61</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../images/temp.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
