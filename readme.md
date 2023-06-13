@@ -30,7 +30,7 @@ care by providing an efficient and convenient solution for remote patient monito
 
 The Code is divided in 3 parties, first one is [Desktop Application code](/./QtApp/main.py), then secondly the hardware application code which is also have two subfolders one for the  [Arduino Uno Code](./hardware_code/carte_graphique_uno/carte_graphique_uno.ino) in side the other one for [Esp8266 Code](./hardware_code/esp_code/esp_code.ino), the final part is used for the serial communication between the [esp to arduino code](./hardware_code/Serial_Communication/).
 
-The application can easily run in windows without any installation of librarys or any program at all, all what you need is to download [Healthcare Connect Folder](./Healthcare%20Connect/) and then execute the application from **"Healthcare connect.exe"**.
+The application can easily run in windows without any installation of librarys or any program at all, all what you need is to download [Healthcare Connect Application](https://drive.google.com/drive/folders/1nnBlWNXi7suOYNn0KuVTA4CRGyBPYQkj?usp=sharing) and then execute the application from **"Healthcare connect.exe"**.
 
 > Before Execute the application make sure that your PC is connected to the Internet.
 
