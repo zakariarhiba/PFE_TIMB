@@ -1,8 +1,12 @@
 # **Development of an IoT Application for Remote Medical Monitoring**
 
+<img src="./QtApp/assets/images/welcome.png"
+     alt="Markdown Monster icon"
+     style="float: start; margin-left: 1em; width:100%;" />
+
 > Realized by : RHIBA Zakaria et TAKILI Youssef
 
-> Framed by : Pr MUSTAPHA El HANINE
+> Pr MUSTAPHA El HANINE
 
 ## Abstract : 
 
@@ -21,4 +25,16 @@ by providing real-time data, even when they are not physically present with the 
 remote monitoring and contributes to proactive patient care.
 With our developed desktop application and small monitor, we aim to enhance the quality of medical
 care by providing an efficient and convenient solution for remote patient monitoring
+
+## Documentation : 
+
+The Code is divided in 3 parties, first one is [Desktop Application code](/./QtApp/main.py), then secondly the hardware application code which is also have two subfolders one for the  [Arduino Uno Code](./hardware_code/carte_graphique_uno/carte_graphique_uno.ino) in side the other one for [Esp8266 Code](./hardware_code/esp_code/esp_code.ino), the final part is used for the serial communication between the [esp to arduino code](./hardware_code/Serial_Communication/).
+
+The application can easily run in windows without any installation of librarys or any program at all, all what you need is to download [Healthcare Connect Folder](./Healthcare%20Connect/) and then execute the application from [Healthcare connect.exe](./Healthcare%20Connect/Healthcare%20Connect.exe)
+
+> Before Execute the application make sure that your PC is connected to the Internet.
+
+> There is only one user account for the moment  : 
+
+> Username : Admin  &  Password : 123
 
