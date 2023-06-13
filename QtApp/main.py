@@ -74,7 +74,7 @@ class Main(QMainWindow):
         self.setWindowTitle("Track Health Application")
         self.setGeometry(300, 400, 823, 563)
         self.setFixedSize(823, 563)
-        uic.loadUi("./ui/main.ui", self)
+        uic.loadUi("./assets/ui/main.ui", self)
         # self.langage.activated[str].connect(self.set_langage)
 
     def trigged_buttons(self):
@@ -93,7 +93,7 @@ class Login(QMainWindow):
         self.setWindowTitle("Track Health Application")
         self.setGeometry(300, 400, 823, 563)
         self.setFixedSize(823, 563)
-        uic.loadUi("./ui/login.ui", self)
+        uic.loadUi("./assets/ui/login.ui", self)
         # self.langage.activated[str].connect(self.set_langage)
 
     def trigged_buttons(self):
@@ -125,7 +125,7 @@ class Login(QMainWindow):
 
     def verifyDb(self, lineEdit_username, lineEdit_password):
         try:
-            df = pd.read_csv("./db/login_accounts.csv")
+            df = pd.read_csv("./assets/db/login_accounts.csv")
             df2 = df.loc[
                 (df["usernames"] == lineEdit_username)
                 & (df["passwords"] == lineEdit_password)
@@ -162,7 +162,7 @@ class AjoutPatient(QMainWindow):
         self.setWindowTitle("Track Health Application")
         self.setGeometry(300, 400, 823, 563)
         self.setFixedSize(823, 563)
-        uic.loadUi("./ui/ajoute_patient.ui", self)
+        uic.loadUi("./assets/ui/ajoute_patient.ui", self)
         # self.langage.activated[str].connect(self.set_langage)
 
     def trigged_buttons(self):
@@ -211,7 +211,7 @@ class AjoutPatient(QMainWindow):
             try:
                 img_PIL = Image.open(self.file_name)
                 display(img_PIL)
-                img_PIL.save(f"./patients_images/{self.patient_img}.jpg")
+                img_PIL.save(f"./assets/patients_images/{self.patient_img}.jpg")
             except:
                 print("doesn't save image")
             QApplication.processEvents()
@@ -235,7 +235,7 @@ class AjoutPatient(QMainWindow):
                 self.le_prenom.setText("")
                 self.patient_descrption.setText("")
                 self.te_descrption_maladie.clear()
-                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+                self.iamge_label.setPixmap(QPixmap("./assets/images/patient.png"))
                 QApplication.processEvents()
                 interfaces.setCurrentWidget(patients_window)
                 patients_window.loadData()
@@ -269,9 +269,9 @@ class AjoutPatient(QMainWindow):
             "desc_maladie": self.patient_maladie,
             "img_name": self.patient_img,
         }
-        df = pd.read_csv(".\db\patients.csv")
+        df = pd.read_csv("./assets/db/patients.csv")
         df = pd.concat([df, pd.DataFrame([new_patient])], ignore_index=True)
-        df.to_csv(".\db\patients.csv", encoding="utf-8", index=False)
+        df.to_csv("./assets/db/patients.csv", encoding="utf-8", index=False)
 
 
 class ModifierPatient(QMainWindow):
@@ -289,7 +289,7 @@ class ModifierPatient(QMainWindow):
         self.setWindowTitle("Track Health Application")
         self.setGeometry(300, 400, 823, 563)
         self.setFixedSize(823, 563)
-        uic.loadUi("./ui/modifier_patient.ui", self)
+        uic.loadUi("./assets/ui/modifier_patient.ui", self)
         # self.langage.activated[str].connect(self.set_langage)
 
     def trigged_buttons(self):
@@ -309,7 +309,7 @@ class ModifierPatient(QMainWindow):
 
     def loadPatientInfo(self):
         self.labelEror.setText("")
-        df = pd.read_csv(".\db\patients.csv")
+        df = pd.read_csv("./assets/db/patients.csv")
         df = df[
             (df["nom"] == self.patient_named) & (df["prenom"] == self.patient_prenomd)
         ]
@@ -335,11 +335,11 @@ class ModifierPatient(QMainWindow):
             self.tb_maladie.setText("pas de descrpition")
         try:
             if patient_info[9] != "" and patient_info[9] != "NAN":
-                img_link = f"./patients_images/{patient_info[9]}.jpg"
+                img_link = f"./assets/patients_images/{patient_info[9]}.jpg"
                 print(img_link)
                 self.iamge_label.setPixmap(QPixmap(img_link))
             elif patient_info[9] == "NAN":
-                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+                self.iamge_label.setPixmap(QPixmap("./assets/images/patient.png"))
             self.iamge_label.repaint()
         except:
             pass
@@ -380,7 +380,7 @@ class ModifierPatient(QMainWindow):
             try:
                 img_PIL = Image.open(self.file_name)
                 display(img_PIL)
-                img_PIL.save(f"./patients_images/{self.patient_img}.jpg")
+                img_PIL.save(f"./assets/patients_images/{self.patient_img}.jpg")
             except:
                 print("doesn't save image")
             QApplication.processEvents()
@@ -404,7 +404,7 @@ class ModifierPatient(QMainWindow):
                 self.le_prenom.setText("")
                 self.patient_descrption.setText("")
                 self.tb_maladie.clear()
-                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+                self.iamge_label.setPixmap(QPixmap("./assets/images/patient.png"))
                 self.deletePatient(self.patient_named, self.patient_prenomd)
                 QApplication.processEvents()
                 interfaces.setCurrentWidget(patients_window)
@@ -418,11 +418,11 @@ class ModifierPatient(QMainWindow):
 
     def deletePatient(self, dl_patient_nom, dl_patient_prenom):
         try:
-            df = pd.read_csv(".\db\patients.csv")
+            df = pd.read_csv("./assets/db/patients.csv")
             df = df.loc[
                 (df["nom"] != dl_patient_nom) & (df["prenom"] != dl_patient_prenom)
             ]
-            df.to_csv(".\db\patients.csv", encoding="utf-8", index=False)
+            df.to_csv("./assets/db/patients.csv", encoding="utf-8", index=False)
         except:
             QMessageBox.information(
                 self,
@@ -453,9 +453,9 @@ class ModifierPatient(QMainWindow):
             "desc_maladie": self.patient_maladie,
             "img_name": self.patient_img,
         }
-        df = pd.read_csv(".\db\patients.csv")
+        df = pd.read_csv("./assets/db/patients.csv")
         df = pd.concat([df, pd.DataFrame([new_patient])], ignore_index=True)
-        df.to_csv(".\db\patients.csv", encoding="utf-8", index=False)
+        df.to_csv("./assets/db/patients.csv", encoding="utf-8", index=False)
 
 
 class Patients(QMainWindow):
@@ -468,7 +468,7 @@ class Patients(QMainWindow):
         self.setWindowTitle("Track Health Application")
         self.setGeometry(300, 400, 823, 563)
         self.setFixedSize(823, 563)
-        uic.loadUi("./ui/patients.ui", self)
+        uic.loadUi("./assets/ui/patients.ui", self)
         self.loadData()
         # self.langage.activated[str].connect(self.set_langage)
         self.tableColumns = ["CIN", "Nom", "Prénom", "Moniteur", "Description"]
@@ -495,11 +495,11 @@ class Patients(QMainWindow):
             dl_patient_nom = self.patients_liste[indexRow][2]
             dl_patient_prenom = self.patients_liste[indexRow][3]
             print(f"{dl_patient_nom} {dl_patient_prenom}")
-            df = pd.read_csv(".\db\patients.csv")
+            df = pd.read_csv("./assets/db/patients.csv")
             df = df.loc[
                 (df["nom"] != dl_patient_nom) & (df["prenom"] != dl_patient_prenom)
             ]
-            df.to_csv(".\db\patients.csv", encoding="utf-8", index=False)
+            df.to_csv("./assets/db/patients.csv", encoding="utf-8", index=False)
             self.loadData()
         except:
             self.labelEror.setText("Erreur Connection à BD")
@@ -517,7 +517,7 @@ class Patients(QMainWindow):
             try:
                 self.table_patients.clear()
                 self.table_patients.setHorizontalHeaderLabels(self.tableColumns)
-                df = pd.read_csv(".\db\patients.csv")
+                df = pd.read_csv("./assets/db/patients.csv")
                 df = df[df["cin"] == key_cin]
                 self.patients_liste = df.values.tolist()
                 rowPosition = self.table_patients.rowCount()
@@ -571,7 +571,7 @@ class Patients(QMainWindow):
 
     def loadData(self):
         try:
-            df = pd.read_csv(".\db\patients.csv")
+            df = pd.read_csv("./assets/db/patients.csv")
             self.patients_liste = df.values.tolist()
             rowPosition = self.table_patients.rowCount()
             self.table_patients.insertRow(rowPosition)
@@ -605,7 +605,7 @@ class Patient(QMainWindow):
 
     def loadPatientInfo(self):
         self.labelEror.setText("")
-        df = pd.read_csv(".\db\patients.csv")
+        df = pd.read_csv("./assets/db/patients.csv")
         df = df[
             (df["nom"] == self.patient_name) & (df["prenom"] == self.patient_prenom)
         ]
@@ -631,11 +631,11 @@ class Patient(QMainWindow):
             self.tb_maladie.setText("pas de descrpition")
         try:
             if patient_info[9] != "" and patient_info[9] != "NAN":
-                img_link = f"./patients_images/{patient_info[9]}.jpg"
+                img_link = f"./assets/patients_images/{patient_info[9]}.jpg"
                 print(img_link)
                 self.iamge_label.setPixmap(QPixmap(img_link))
             elif patient_info[9] == "NAN":
-                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+                self.iamge_label.setPixmap(QPixmap("./assets/images/patient.png"))
             self.iamge_label.repaint()
         except:
             pass
@@ -644,7 +644,7 @@ class Patient(QMainWindow):
         self.setWindowTitle("Track Health Application")
         self.setGeometry(300, 400, 823, 563)
         self.setFixedSize(823, 563)
-        uic.loadUi("./ui/patient.ui", self)
+        uic.loadUi("./assets/ui/patient.ui", self)
         # self.langage.activated[str].connect(self.set_langage)
 
     def trigged_buttons(self):
@@ -693,7 +693,7 @@ class Moniteur(QMainWindow):
         print(f"puls_rate : {puls_rate}")
 
     def loadPatientInfo(self):
-        df = pd.read_csv(".\db\patients.csv")
+        df = pd.read_csv("./assets/db/patients.csv")
         df = df[
             (df["nom"] == self.patient_name) & (df["prenom"] == self.patient_prenom)
         ]
@@ -709,11 +709,11 @@ class Moniteur(QMainWindow):
         self.cb_nationalite.setCurrentText(str(patient_info[6]))
         try:
             if patient_info[9] != "" and patient_info[9] != "NAN":
-                img_link = f"./patients_images/{patient_info[9]}.jpg"
+                img_link = f"./assets/patients_images/{patient_info[9]}.jpg"
                 print(img_link)
                 self.iamge_label.setPixmap(QPixmap(img_link))
             elif patient_info[9] == "NAN":
-                self.iamge_label.setPixmap(QPixmap("./images/patient.png"))
+                self.iamge_label.setPixmap(QPixmap("./assets/images/patient.png"))
             self.iamge_label.repaint()
         except:
             pass
@@ -722,7 +722,7 @@ class Moniteur(QMainWindow):
         self.setWindowTitle("Track Health Application")
         self.setGeometry(300, 400, 823, 563)
         self.setFixedSize(823, 563)
-        uic.loadUi("./ui/moniteur.ui", self)
+        uic.loadUi("./assets/ui/moniteur.ui", self)
         # self.langage.activated[str].connect(self.set_langage)
 
     def trigged_buttons(self):
@@ -755,7 +755,7 @@ class Moniteur(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     interfaces = QStackedWidget()
-    interfaces.setWindowIcon(QtGui.QIcon("./images/icon.png"))
+    interfaces.setWindowIcon(QtGui.QIcon("./assets/images/icon.png"))
     main_window = Main()
     login_window = Login()
     patient_window = Patient()

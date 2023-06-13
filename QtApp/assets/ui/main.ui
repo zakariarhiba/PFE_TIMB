@@ -1322,40 +1322,12 @@
  
  </string>
   </property>
-  <widget class="QComboBox" name="langage">
-   <property name="geometry">
-    <rect>
-     <x>710</x>
-     <y>520</y>
-     <width>87</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <item>
-    <property name="text">
-     <string>Francais</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Anglais</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>عربى</string>
-    </property>
-   </item>
-  </widget>
   <widget class="QPushButton" name="button_login">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>310</x>
      <y>420</y>
-     <width>161</width>
+     <width>221</width>
      <height>61</height>
     </rect>
    </property>
@@ -1365,23 +1337,6 @@
    </property>
    <property name="text">
     <string>Se Connecter</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="button_about">
-   <property name="geometry">
-    <rect>
-     <x>440</x>
-     <y>420</y>
-     <width>161</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-radius: 12px;
-</string>
-   </property>
-   <property name="text">
-    <string>About</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
