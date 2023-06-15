@@ -30,6 +30,7 @@ class MqttApp(QThread):
     spio2 = pyqtSignal(str)
     temp = pyqtSignal(str)
     pulse_rate = pyqtSignal(str)
+    temp2 = pyqtSignal(str)
 
     def run(self):
         self.client = paho.Client()
@@ -43,6 +44,7 @@ class MqttApp(QThread):
         self.client.subscribe("moniteurCHU/temp")
         self.client.subscribe("moniteurCHU/spio2")
         self.client.subscribe("mntrCHU/plsRate")
+        self.client.subscribe("moniteurCHU/patient2/temp")
 
     def on_message(self, client, userdata, msg):
         topic, message = msg.topic, msg.payload.decode("utf-8")
@@ -53,6 +55,8 @@ class MqttApp(QThread):
             self.spio2.emit(message)
         elif topic == "mntrCHU/plsRate":
             self.pulse_rate.emit(message)
+        elif topic == "moniteurCHU/patient2/temp":
+            self.temp2.emit(message)
 
     def on_publish(self, client, userdata, result):
         print("data published")
@@ -681,8 +685,14 @@ class Moniteur(QMainWindow):
         self.start_subscribing()
 
     def set_temp(self, temp):
-        self.temperature_value.display(temp)
-        print(f"temp : {temp}")
+        if self.patient_name == "SAAD":
+            self.temperature_value.display(temp)
+            print(f"temp : {temp}")
+
+    def set_temp2(self, temp2):
+        if self.patient_name == "SADIA": 
+            self.temperature_value.display(temp2)
+            print(f"temp : {temp2}")
 
     def set_spio2(self, spio2):
         self.progressBar_spo2.setValue(int(spio2))
@@ -691,6 +701,14 @@ class Moniteur(QMainWindow):
     def set_pulse_rate(self, puls_rate):
         self.puls_rate.display(puls_rate)
         print(f"puls_rate : {puls_rate}")
+
+    def start_subscribing(self):
+        self.thread = MqttApp()
+        self.thread.temp.connect(self.set_temp)
+        self.thread.spio2.connect(self.set_spio2)
+        self.thread.pulse_rate.connect(self.set_pulse_rate)
+        self.thread.temp2.connect(self.set_temp2)
+        self.thread.start()
 
     def loadPatientInfo(self):
         df = pd.read_csv("./assets/db/patients.csv")
@@ -732,6 +750,9 @@ class Moniteur(QMainWindow):
         self.button_retour.clicked.connect(lambda: self.goToPatient())
 
     def goToPatient(self):
+        self.temperature_value.display(0)
+        self.puls_rate.display(0)
+        self.progressBar_spo2.setValue(int(0))
         try:
             dl_patient_nom = self.patient_name
             dl_patient_prenom = self.patient_prenom
@@ -743,13 +764,6 @@ class Moniteur(QMainWindow):
         else:
             self.labelEror.setText("")
             interfaces.setCurrentWidget(patient_window)
-
-    def start_subscribing(self):
-        self.thread = MqttApp()
-        self.thread.temp.connect(self.set_temp)
-        self.thread.spio2.connect(self.set_spio2)
-        self.thread.pulse_rate.connect(self.set_pulse_rate)
-        self.thread.start()
 
 
 if __name__ == "__main__":
